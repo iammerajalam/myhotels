@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>myhotels.com | Book Hotels, Resorts & Homestays</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root{
+      --brand:#1a73e8;
+      --accent:#ff7043;
+      --bg:#f7f8fc;
+      --text:#1e2a3a;
+      --muted:#60738a;
+      --card:#ffffff;
+      --border:#e6e9f0;
+      --success:#2ecc71;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      color:var(--text);
+      background:var(--bg);
+    }
+
+    /* Navbar */
+    .nav{
+      position:sticky; top:0; z-index:1000;
+      background:#fff; border-bottom:1px solid var(--border);
+    }
+    .nav-inner{
+      max-width:1200px; margin:0 auto; padding:12px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px; font-weight:700; color:var(--brand);
+    }
+    .brand i{color:var(--accent)}
+    .nav-links{
+      display:flex; align-items:center; gap:18px;
+    }
+    .nav-links a{
+      text-decoration:none; color:var(--muted); font-weight:600; padding:8px 10px; border-radius:6px;
+    }
+    .nav-links a.active{color:#fff; background:var(--brand)}
+    .nav-actions{
+      display:flex; align-items:center; gap:12px;
+    }
+    .btn{
+      border:none; cursor:pointer; border-radius:8px; font-weight:600;
+    }
+    .btn-outline{
+      background:#fff; color:var(--brand); border:1px solid var(--brand); padding:8px 14px;
+    }
+    .btn-solid{
+      background:var(--brand); color:#fff; padding:8px 14px;
+    }
+
+    /* Hero */
+    .hero{
+      position:relative;
+      background:url('https://images.unsplash.com/photo-1496412705862-e0088f16f791?auto=format&fit=crop&w=1900&q=80') center/cover no-repeat;
+      min-height:420px; display:flex; align-items:center; justify-content:center;
+    }
+    .hero::after{
+      content:'';
+      position:absolute; inset:0; background:rgba(0,0,0,0.45);
+    }
+    .hero-content{
+      position:relative; z-index:1; text-align:center; color:#fff; padding:20px;
+    }
+    .hero-title{font-size:2.2rem; font-weight:700; margin:0 0 8px}
+    .hero-sub{font-size:1rem; color:#e8edf5; margin-bottom:18px}
+
+    /* Search card */
+    .search-card{
+      position:relative; z-index:2;
+      max-width:1000px; margin:-48px auto 24px; background:var(--card);
+      border-radius:14px; box-shadow:0 10px 24px rgba(0,0,0,0.15);
+      overflow:hidden;
+    }
+    .tabs{
+      display:flex; background:#f1f5fb;
+    }
+    .tab{
+      flex:1; text-align:center; padding:12px; font-weight:600; color:var(--muted); cursor:pointer;
+    }
+    .tab.active{background:#fff; color:var(--brand)}
+    .search-fields{
+      display:grid; grid-template-columns:2fr 1.2fr 1.2fr 1.2fr auto; gap:12px; padding:16px;
+    }
+    .field{
+      position:relative;
+    }
+    .label{font-size:12px; color:var(--muted); margin-bottom:6px}
+    .input, .select{
+      width:100%; padding:12px 40px 12px 12px; border:1px solid var(--border); border-radius:10px; font-size:14px;
+      background:#fff;
+    }
+    .icon{
+      position:absolute; right:12px; top:34px; color:#9aa7b7;
+    }
+    .search-btn{
+      background:var(--accent); color:#fff; border:none; border-radius:10px; padding:12px 18px; font-weight:700; cursor:pointer;
+      align-self:end; height:44px;
+    }
+    .suggestions{
+      position:absolute; left:0; right:0; top:70px; background:#fff; border:1px solid var(--border); border-radius:10px;
+      box-shadow:0 6px 16px rgba(0,0,0,0.12); overflow:hidden; display:none; max-height:220px; overflow-y:auto; z-index:10;
+    }
+    .suggestions div{padding:10px 12px; cursor:pointer}
+    .suggestions div:hover{background:#f7faff}
+
+    /* Recent searches */
+    .recent{
+      max-width:1000px; margin:12px auto; color:var(--muted); font-size:14px;
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    .chip{
+      background:#fff; border:1px solid var(--border); padding:6px 10px; border-radius:999px; cursor:pointer;
+    }
+
+    /* Sections */
+    .section{
+      max-width:1200px; margin:24px auto; padding:0 20px;
+    }
+    .section h3{margin:0 0 12px; font-size:1.4rem}
+    .grid{
+      display:grid; gap:16px; grid-template-columns:repeat(4,1fr);
+    }
+    .card{
+      background:#fff; border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:transform .2s;
+    }
+    .card:hover{transform:translateY(-3px)}
+    .card img{width:100%; height:140px; object-fit:cover}
+    .card-body{padding:12px}
+    .price{font-weight:700; color:var(--text)}
+    .meta{color:var(--muted); font-size:13px}
+
+    /* Trust row */
+    .trust{
+      display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:12px;
+    }
+    .trust-item{
+      background:#fff; border:1px solid var(--border); border-radius:10px; padding:12px; display:flex; align-items:center; gap:10px;
+    }
+    .trust-item i{color:var(--success)}
+
+    /* Social & footer */
+    .social{
+      text-align:center; margin:30px 0 10px;
+    }
+    .social a{
+      display:inline-flex; align-items:center; gap:8px;
+      text-decoration:none; color:#fff; margin:0 6px; padding:8px 12px; border-radius:8px; font-weight:600;
+    }
+    .facebook{background:#1877f2} .instagram{background:#e1306c} .whatsapp{background:#25d366} .twitter{background:#1da1f2}
+
+    .footer{
+      background:#0f172a; color:#a8b1c7; margin-top:30px;
+    }
+    .footer-inner{
+      max-width:1200px; margin:0 auto; padding:24px 20px; display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:20px;
+    }
+    .footer h4{color:#e2e8f0; margin:0 0 10px}
+    .footer a{color:#a8b1c7; text-decoration:none; display:block; margin:6px 0}
+    .subfooter{
+      border-top:1px solid #19223a; text-align:center; color:#7b89a3; padding:12px 20px;
+    }
+
+    /* Modals */
+    .modal{
+      position:fixed; inset:0; background:rgba(0,0,0,0.5); display:none; align-items:center; justify-content:center; z-index:2000;
+    }
+    .modal-content{
+      background:#fff; border-radius:12px; width:360px; max-width:92vw; padding:18px;
+    }
+    .modal-header{
+      display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;
+    }
+    .close{cursor:pointer; color:#999}
+    .oauth{
+      display:grid; gap:10px; margin-top:12px;
+    }
+    .oauth .btn-google{background:#ea4335; color:#fff; padding:10px 12px; border-radius:10px; border:none; cursor:pointer; font-weight:700}
+    .oauth .btn-mobile{background:#34a853; color:#fff; padding:10px 12px; border-radius:10px; border:none; cursor:pointer; font-weight:700}
+
+    /* Responsive */
+    @media (max-width:1020px){
+      .search-fields{grid-template-columns:1.8fr 1.2fr 1.2fr 1.2fr auto}
+      .grid{grid-template-columns:repeat(3,1fr)}
+    }
+    @media (max-width:760px){
+      .nav-inner{flex-wrap:wrap; gap:10px}
+      .search-fields{grid-template-columns:1fr}
+      .trust{grid-template-columns:repeat(2,1fr)}
+      .grid{grid-template-columns:repeat(2,1fr)}
+      .hero-title{font-size:1.8rem}
+      .footer-inner{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width:480px){
+      .grid{grid-template-columns:1fr}
+      .footer-inner{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="nav">
+    <div class="nav-inner">
+      <div class="brand"><i class="fa-solid fa-hotel"></i> myhotels.com</div>
+      <nav class="nav-links">
+        <a href="#" class="active"><i class="fa-solid fa-bed"></i> Hotels</a>
+        <a href="#"><i class="fa-solid fa-house"></i> Stays</a>
+        <a href="#"><i class="fa-solid fa-ticket"></i> Offers</a>
+        <a href="#"><i class="fa-solid fa-headset"></i> Support</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="btn btn-outline" id="loginBtn"><i class="fa-regular fa-user"></i> Login / Signup</button>
+        <button class="btn btn-solid"><i class="fa-solid fa-tags"></i> Get App</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Find stays you’ll love—across India and beyond</h1>
+      <p class="hero-sub">Great deals, real reviews, and flexible bookings.</p>
+    </div>
+  </section>
+
+  <!-- Search card -->
+  <div class="search-card">
+    <div class="tabs">
+      <div class="tab active" id="tabHotels"><i class="fa-solid fa-bed"></i> Hotels</div>
+      <div class="tab" id="tabHomes"><i class="fa-solid fa-house"></i> Homestays</div>
+      <div class="tab" id="tabResorts"><i class="fa-solid fa-umbrella-beach"></i> Resorts</div>
+    </div>
+    <div class="search-fields">
+      <!-- City -->
+      <div class="field">
+        <div class="label">City / Hotel name</div>
+        <input id="cityInput" class="input" type="text" placeholder="e.g., Indore, Bhopal, Goa" autocomplete="off" />
+        <i class="fa-solid fa-location-dot icon"></i>
+        <div id="citySuggestions" class="suggestions"></div>
+      </div>
+      <!-- Check-in -->
+      <div class="field">
+        <div class="label">Check-in</div>
+        <input id="checkin" class="input" type="date" />
+        <i class="fa-regular fa-calendar icon"></i>
+      </div>
+      <!-- Check-out -->
+      <div class="field">
+        <div class="label">Check-out</div>
+        <input id="checkout" class="input" type="date" />
+        <i class="fa-regular fa-calendar icon"></i>
+      </div>
+      <!-- Guests & rooms -->
+      <div class="field">
+        <div class="label">Guests & rooms</div>
+        <select id="guests" class="select">
+          <option value="2-1">2 Guests, 1 Room</option>
+          <option value="1-1">1 Guest, 1 Room</option>
+          <option value="3-2">3 Guests, 2 Rooms</option>
+          <option value="4-2">4 Guests, 2 Rooms</option>
+          <option value="6-3">6 Guests, 3 Rooms</option>
+        </select>
+        <i class="fa-solid fa-user-group icon"></i>
+      </div>
+      <!-- Search -->
+      <button id="searchBtn" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+    </div>
+  </div>
+
+  <!-- Recent searches -->
+  <div id="recent" class="recent" aria-live="polite"></div>
+
+  <!-- Popular destinations -->
+  <section class="section">
+    <h3>Popular destinations</h3>
+    <div class="grid">
+      <a class="card" href="#">
+        <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=60" alt="Goa beach">
+        <div class="card-body">
+          <div><strong>Goa</strong></div>
+          <div class="meta">Beach stays • Party hubs • Family resorts</div>
+        </div>
+      </a>
+      <a class="card" href="#">
+        <img src="https://images.unsplash.com/photo-1603264116767-9a07f3075c52?auto=format&fit=crop&w=900&q=60" alt="Mumbai skyline">
+        <div class="card-body">
+          <div><strong>Mumbai</strong></div>
+          <div class="meta">Business hotels • Sea-facing rooms</div>
+        </div>
+      </a>
+      <a class="card" href="#">
+        <img src="https://images.unsplash.com/photo-1599045118108-1f9e56f635ca?auto=format&fit=crop&w=900&q=60" alt="Jaipur palace">
+        <div class="card-body">
+          <div><strong>Jaipur</strong></div>
+          <div class="meta">Heritage stays • Havelis • Fort views</div>
+        </div>
+      </a>
+      <a class="card" href="#">
+        <img src="https://images.unsplash.com/photo-1546538902-ef89138f9386?auto=format&fit=crop&w=900&q=60" alt="Bhopal lake">
+        <div class="card-body">
+          <div><strong>Bhopal</strong></div>
+          <div class="meta">Lakeside hotels • Calm & budget friendly</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Deals -->
+  <section class="section">
+    <h3>Best deals today</h3>
+    <div class="grid">
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1560067174-89429d1d5dda?auto=format&fit=crop&w=900&q=60" alt="Boutique hotel room">
+        <div class="card-body">
+          <div><strong>MyHotels Boutique, Indore</strong></div>
+          <div class="meta">Near Rajwada • Free breakfast • 4.4 ★</div>
+          <div class="price">₹1,999 / night</div>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=900&q=60" alt="Luxury suite">
+        <div class="card-body">
+          <div><strong>Lakeview Suites, Bhopal</strong></div>
+          <div class="meta">VIP access • Pool • 4.6 ★</div>
+          <div class="price">₹3,499 / night</div>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=900&q=60" alt="Resort">
+        <div class="card-body">
+          <div><strong>Sunset Resort, Goa</strong></div>
+          <div class="meta">Beachfront • Bar • 4.3 ★</div>
+          <div class="price">₹4,299 / night</div>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=900&q=60" alt="Business hotel">
+        <div class="card-body">
+          <div><strong>City Hub, Mumbai</strong></div>
+          <div class="meta">Near BKC • Wi‑Fi • 4.2 ★</div>
+          <div class="price">₹2,899 / night</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust badges -->
+  <section class="section">
+    <h3>Why book with myhotels.com?</h3>
+    <div class="trust">
+      <div class="trust-item"><i class="fa-solid fa-shield-check"></i> <div><strong>Secure payments</strong><div class="meta">Protected checkout and quick refunds</div></div></div>
+      <div class="trust-item"><i class="fa-solid fa-money-bill-wave"></i> <div><strong>Best price</strong><div class="meta">Daily deals and member discounts</div></div></div>
+      <div class="trust-item"><i class="fa-solid fa-headset"></i> <div><strong>24x7 support</strong><div class="meta">Help whenever you need it</div></div></div>
+      <div class="trust-item"><i class="fa-solid fa-star"></i> <div><strong>Verified reviews</strong><div class="meta">Ratings you can trust</div></div></div>
+    </div>
+  </section>
+
+  <!-- Social share -->
+  <div class="social">
+    <a class="facebook" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://myhotels.com"><i class="fa-brands fa-facebook-f"></i> Share</a>
+    <a class="instagram" target="_blank" href="https://www.instagram.com/"><i class="fa-brands fa-instagram"></i> Follow</a>
+    <a class="whatsapp" target="_blank" href="https://api.whatsapp.com/send?text=Book%20great%20hotels%20on%20myhotels.com%20https://myhotels.com"><i class="fa-brands fa-whatsapp"></i> Share</a>
+    <a class="twitter" target="_blank" href="https://twitter.com/intent/tweet?url=https://myhotels.com&text=Find%20awesome%20stays%20on%20myhotels.com"><i class="fa-brands fa-x-twitter"></i> Tweet</a>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <h4>myhotels.com</h4>
+        <p>Book hotels, resorts, and homestays with great deals and flexible options.</p>
+      </div>
+      <div>
+        <h4>Discover</h4>
+        <a href="#">Top cities</a>
+        <a href="#">Weekend getaways</a>
+        <a href="#">Couple friendly</a>
+        <a href="#">Business stays</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="#">About us</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+        <a href="#">Contact</a>
+      </div>
+      <div>
+        <h4>Help</h4>
+        <a href="#">Support</a>
+        <a href="#">Cancellation policy</a>
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+      </div>
+    </div>
+    <div class="subfooter">© 2025 myhotels.com • All rights reserved</div>
+  </footer>
+
+  <!-- Login / signup modal -->
+  <div class="modal" id="authModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="margin:0">Login / Signup</h3>
+        <span class="close" id="closeAuth"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+      <div>
+        <label class="label">Mobile number</label>
+        <input id="mobileInput" class="input" type="tel" placeholder="Enter mobile (India: 10 digits)" />
+        <button id="getOtp" class="btn btn-solid" style="width:100%; margin-top:10px">Get OTP</button>
+      </div>
+      <div class="oauth">
+        <button class="btn-google"><i class="fa-brands fa-google"></i> Continue with Google</button>
+        <button class="btn-mobile"><i class="fa-solid fa-mobile-screen-button"></i> Continue with Mobile</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tabs (visual only)
+    const tabs = [document.getElementById('tabHotels'), document.getElementById('tabHomes'), document.getElementById('tabResorts')];
+    tabs.forEach(t => t.addEventListener('click', () => {
+      tabs.forEach(x => x.classList.remove('active')); t.classList.add('active');
+    }));
+
+    // City suggestions
+    const cities = [
+      'Indore', 'Bhopal', 'Ujjain', 'Jabalpur', 'Gwalior', 'Mumbai', 'Pune',
+      'Goa', 'Jaipur', 'Delhi', 'Bengaluru', 'Hyderabad', 'Chennai', 'Kolkata'
+    ];
+    const cityInput = document.getElementById('cityInput');
+    const citySuggestions = document.getElementById('citySuggestions');
+
+    function showSuggestions(query){
+      const q = query.trim().toLowerCase();
+      const list = cities.filter(c => c.toLowerCase().includes(q)).slice(0,8);
+      if(!q || list.length === 0){ citySuggestions.style.display='none'; citySuggestions.innerHTML=''; return; }
+      citySuggestions.innerHTML = list.map(c => `<div data-city="${c}"><i class="fa-solid fa-location-dot"></i> ${c}</div>`).join('');
+      citySuggestions.style.display='block';
+    }
+    cityInput.addEventListener('input', e => showSuggestions(e.target.value));
+    citySuggestions.addEventListener('click', e => {
+      const item = e.target.closest('div[data-city]');
+      if(item){ cityInput.value = item.dataset.city; citySuggestions.style.display='none'; }
+    });
+    document.addEventListener('click', e => {
+      if(!citySuggestions.contains(e.target) && e.target !== cityInput){ citySuggestions.style.display='none'; }
+    });
+
+    // Date validation
+    const checkin = document.getElementById('checkin');
+    const checkout = document.getElementById('checkout');
+    const todayStr = new Date().toISOString().split('T')[0];
+    checkin.min = todayStr; checkout.min = todayStr;
+
+    checkin.addEventListener('change', () => {
+      if(checkout.value && checkout.value <= checkin.value){
+        checkout.value = ''; alert('Checkout must be after check-in.');
+      }
+      checkout.min = checkin.value ? new Date(new Date(checkin.value).getTime() + 24*3600*1000).toISOString().split('T')[0] : todayStr;
+    });
+
+    // Search action (demo)
+    const recentBox = document.getElementById('recent');
+    function renderRecent(){
+      const items = JSON.parse(localStorage.getItem('myhotels_recent') || '[]');
+      recentBox.innerHTML = items.length ? '<span class="meta">Recent:</span>' + items.map(i => `<span class="chip" data-j="${encodeURIComponent(JSON.stringify(i))}">${i.city} • ${i.checkin} → ${i.checkout} • ${i.guests}</span>`).join('') : '';
+    }
+    renderRecent();
+
+    recentBox.addEventListener('click', e => {
+      const chip = e.target.closest('.chip'); if(!chip) return;
+      const data = JSON.parse(decodeURIComponent(chip.dataset.j));
+      cityInput.value = data.city; checkin.value = data.checkin; checkout.value = data.checkout; document.getElementById('guests').value = data.guests;
+    });
+
+    document.getElementById('searchBtn').addEventListener('click', () => {
+      const payload = {
+        city: cityInput.value.trim(),
+        checkin: checkin.value,
+        checkout: checkout.value,
+        guests: document.getElementById('guests').value
+      };
+      if(!payload.city){ alert('Please enter a city or hotel name.'); return; }
+      if(!payload.checkin || !payload.checkout){ alert('Please select check-in and check-out dates.'); return; }
+      if(payload.checkout <= payload.checkin){ alert('Checkout must be after check-in.'); return; }
+
+      // Save recent searches
+      const items = JSON.parse(localStorage.getItem('myhotels_recent') || '[]');
+      items.unshift(payload);
+      localStorage.setItem('myhotels_recent', JSON.stringify(items.slice(0,6)));
+
+      renderRecent();
+      alert(`Searching hotels in ${payload.city} for ${payload.checkin} → ${payload.checkout} (${payload.guests})\n\nDemo only — integrate results page here.`);
+    });
+
+    // Auth modal
+    const authModal = document.getElementById('authModal');
+    document.getElementById('loginBtn').addEventListener('click', () => authModal.style.display='flex');
+    document.getElementById('closeAuth').addEventListener('click', () => authModal.style.display='none');
+    authModal.addEventListener('click', e => { if(e.target === authModal) authModal.style.display='none'; });
+
+    // Simulated login/signup
+    document.querySelector('.btn-google').addEventListener('click', () => {
+      alert('Google Sign-In simulated. Connect Firebase Auth for production.');
+    });
+    document.querySelector('.btn-mobile').addEventListener('click', () => {
+      alert('Mobile signup simulated. Use OTP via SMS provider for production.');
+    });
+    document.getElementById('getOtp').addEventListener('click', () => {
+      const mobile = document.getElementById('mobileInput').value.trim();
+      if(!/^[6-9]\d{9}$/.test(mobile)){ alert('Enter a valid 10-digit Indian mobile number.'); return; }
+      alert(`OTP sent to ${mobile} (demo).`);
+    });
+  </script>
+</body>
+</html>
